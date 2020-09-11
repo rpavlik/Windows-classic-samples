@@ -134,6 +134,8 @@ void RenderThread(RenderParam& params)
     // It's not necessary to call init_apartment on every thread, but it needs to be called at least once before using WinRT
     winrt::init_apartment();
 
+    std::cout << "In a render thread" << std::endl;
+
     D3D11Renderer renderer;
     renderer.Create(params.target.Adapter());
 
@@ -172,6 +174,7 @@ void RenderThread(RenderParam& params)
     int surfaceIndex = 0;
     while (!params.shouldTerminate)
     {
+        std::cout << "surface " << surfaceIndex << std::endl;
         UINT64 fenceValue = renderer.RenderAndGetFenceValue(surfaceIndex);
 
         winrt::DisplayTask task = taskPool.CreateTask();
@@ -256,6 +259,7 @@ int main()
         {
             auto vSync = mode.PresentationRate().VerticalSyncRate;
             double vSyncDouble = (double)vSync.Numerator / vSync.Denominator;
+            std::cout << "Rate: " << vSyncDouble << std::endl;
 
             double modeDiff = abs(vSyncDouble - 60);
             if (modeDiff < bestModeDiff)
